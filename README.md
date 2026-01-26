@@ -85,19 +85,10 @@ KCDTA/                  # Model code and weights
 Backend/
   main.py               # FastAPI backend
   requirements.txt      # Python dependencies
-  Dockerfile            # (optional) for container deployment
+  # Dockerfile (not included in this repo)
 ```
 
 ---
-
-## Docker (Optional)
-
-Build and run the API in a container:
-
-```bash
-docker build -t kc-dta-api .
-docker run -p 8000:8000 kc-dta-api
-```
 
 ---
 
@@ -111,4 +102,4 @@ docker run -p 8000:8000 kc-dta-api
 
 ## License
 
-This project is for research and educational use. See LICENSE for details.
+This project is made for educational purposes and out of love for the developer community. Feel free to use, share, and learn from it!
