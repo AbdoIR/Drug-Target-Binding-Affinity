@@ -1,0 +1,11 @@
+# Web framework
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# Machine Learning
+torch>=2.0.0
+torch-geometric>=2.4.0
+
+# Chemistry
+rdkit>=2023.3.1
