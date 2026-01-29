@@ -1,58 +1,130 @@
-# Drug-Target Binding Affinity Prediction API (KC-DTA, KIBA Model)
+# Drug-Target Binding Affinity Prediction (KC-DTA, KIBA Model)
 
-This repository provides a production-ready FastAPI backend for predicting drug-target binding affinity using the **KIBA model** from the KC-DTA (Knowledge-based Compound-protein interaction Drug-Target Affinity) project.
+This repository provides a production-ready FastAPI backend and deep learning models for predicting drug-target binding affinity using the **KIBA model** from the KC-DTA (Knowledge-based Compound-protein interaction Drug-Target Affinity) project.
 
 ---
 
-## About the KIBA Model (KC-DTA)
+## 1. Project Overview
 
-- **KC-DTA** is a deep learning framework for predicting the binding affinity between drug compounds (SMILES) and protein targets (amino acid sequences).
-- The **KIBA model** is a neural network trained on the KIBA dataset, a benchmark for kinase inhibitor bioactivity, combining multiple bioactivity measures into a single score.
-- The model uses:
-  - Graph-based molecular encoding for drugs (SMILES → molecular graph)
+Drug-target binding affinity prediction is crucial for drug discovery. This project leverages deep learning (GCN, CNN, FNN) to predict the binding affinity between drug compounds (SMILES) and protein targets (amino acid sequences), using the KIBA dataset as a benchmark.
+
+---
+
+## 2. About the KC-DTA KIBA Model
+
+- **KC-DTA**: Deep learning framework for compound-protein affinity prediction.
+- **KIBA model**: Neural network trained on the KIBA dataset, which integrates multiple kinase inhibitor bioactivity measures into a single score.
+- **Model features:**
+  - Graph-based encoding for drugs (SMILES → molecular graph)
   - 3D/2D k-mer encoding for proteins
-  - A hybrid neural architecture (GCN, CNN, FNN)
-- The trained model file is `KCDTA/model_cnn_kiba.model`.
+  - Hybrid neural architecture (GCN, CNN, FNN)
+- Trained model used: `KCDTA/model_cnn_kiba.model`
 
 ---
 
-## Backend API (FastAPI)
+## 3. Project Structure
+
+```
+.
+├── backend                     # FastAPI backend
+│   ├── main.py
+│   └── requirements.txt
+└── KCDTA/                      # Model code and scripts
+    ├── models/
+    │   └── cnn.py
+    ├── data/                   # Training datasets
+    │   ├── davis/
+    │   └── kiba/
+    ├── model_cnn_kiba.model    # Pre-trained kiba model
+    ├── model_cnn_davis.model   # Pre-trained davis model
+    ├── create_davis_kiba.py
+    ├── training.py
+    ├── test.py
+    └── utils.py
+```
+
+---
+
+
+## 4. Dataset & Data Preparation
+
+- **KIBA and Davis datasets**: Provided in `KCDTA/data/` (raw formats)
+- Data preprocessing and conversion scripts are available (see below for usage instructions)
+
+### Data Conversion (PyTorch Format)
+
+To convert the Davis or KIBA datasets into PyTorch format, run the data conversion script (if available in your local copy):
+
+```bash
+python KCDTA/create_davis_kiba.py
+```
+
+Note: The code provided is for the fifth fold in a five-fold cross-validation experiment.
+
+The processed data will be saved in a directory (e.g., `KCDTA/data/processed/`).
+
+---
+
+
+## 5. Training & Evaluation
+
+To train or evaluate the model, use the following commands:
+
+```bash
+cd KCDTA
+python training.py   # Train the model
+python test.py       # Evaluate the model
+```
+
+Arguments for `training.py`:
+- The first argument: 0 for Davis, 1 for KIBA dataset.
+- The second argument: 0 (use the CNN model provided).
+- The third argument: CUDA index (e.g., 0 or 1). Adjust according to your system.
+
+Example:
+```bash
+python training.py 0 0 0
+```
+This will train on the Davis dataset using the CNN model and CUDA device 0.
+
+To test the trained model:
+```bash
+python test.py 0  # 0 for Davis, 1 for KIBA
+```
+
+Note: Only the fifth fold is provided by default.
+
+---
+
+## 6. Backend API (FastAPI)
 
 ### Features
 
-- **/predict** endpoint: Predicts binding affinity for a given drug (SMILES) and protein (sequence)
-- **/health** endpoint: Check API and model status
+- **/predict**: Predicts binding affinity for a given drug (SMILES) and protein (sequence)
+- **/health**: Check API and model status
 - CORS enabled for local development
-- Highly optimized for speed and memory
 
 ### Requirements
 
 - Python 3.11+
-- See `requirements.txt` for dependencies
+- See `backend/requirements.txt` for dependencies
 
 ### Running Locally
 
-1. **Install dependencies**
+```bash
+cd backend
+pip install -r requirements.txt
+python main.py
+```
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+The server will run at [http://localhost:8000](http://localhost:8000)
 
-2. **Start the API**
+#### API Docs
 
-   ```bash
-   python main.py
-   ```
-
-   The server will run at [http://localhost:8000](http://localhost:8000)
-
-3. **API Docs**
-   - Interactive docs: [http://localhost:8000/docs](http://localhost:8000/docs)
-   - Redoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+- Interactive: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Redoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 ### Example Usage
-
-#### Predict Binding Affinity (Python)
 
 ```python
 import requests
@@ -64,7 +136,7 @@ response = requests.post("http://localhost:8000/predict", json={
 print(response.json())
 ```
 
-#### Example Response
+**Example Response:**
 
 ```json
 {
@@ -77,22 +149,15 @@ print(response.json())
 
 ---
 
-## Project Structure
+## A. Contributing & Support
 
-```
-KCDTA/                  # Model code and weights
-  model_cnn_kiba.model  # Trained KIBA model
-Backend/
-  main.py               # FastAPI backend
-  requirements.txt      # Python dependencies
-  # Dockerfile (not included in this repo)
-```
+Contributions, issues, and feature requests are welcome! Please open an issue or submit a pull request.
+
+For questions, contact the maintainer or open an issue on GitHub.
 
 ---
 
----
-
-## References
+## B. References
 
 - KC-DTA: [Original Paper](https://doi.org/10.1093/bioinformatics/btaa880)
 - KIBA Dataset: [KIBA on Zenodo](https://zenodo.org/record/4032820)
@@ -100,6 +165,6 @@ Backend/
 
 ---
 
-## License
+## C. License
 
-This project is made for educational purposes and out of love for the developer community. Feel free to use, share, and learn from it!
+This project is made for educational purposes and out of love for the developer community. Feel free to use, share, and learn from it ♥️.
