@@ -45,7 +45,6 @@ Drug-target binding affinity prediction is crucial for drug discovery. This proj
 
 ---
 
-
 ## 4. Dataset & Data Preparation
 
 - **KIBA and Davis datasets**: Provided in `KCDTA/data/` (raw formats)
@@ -65,7 +64,6 @@ The processed data will be saved in a directory (e.g., `KCDTA/data/processed/`).
 
 ---
 
-
 ## 5. Training & Evaluation
 
 To train or evaluate the model, use the following commands:
@@ -77,17 +75,21 @@ python test.py       # Evaluate the model
 ```
 
 Arguments for `training.py`:
+
 - The first argument: 0 for Davis, 1 for KIBA dataset.
 - The second argument: 0 (use the CNN model provided).
 - The third argument: CUDA index (e.g., 0 or 1). Adjust according to your system.
 
 Example:
+
 ```bash
 python training.py 0 0 0
 ```
+
 This will train on the Davis dataset using the CNN model and CUDA device 0.
 
 To test the trained model:
+
 ```bash
 python test.py 0  # 0 for Davis, 1 for KIBA
 ```
@@ -146,6 +148,32 @@ print(response.json())
   "model_used": "KIBA"
 }
 ```
+
+---
+
+## 7. Docker Usage
+
+This project includes a `Dockerfile` for easy containerization and deployment. Using Docker ensures a consistent environment for running the backend and model inference, regardless of your local setup.
+
+### Building the Docker Image
+
+From the project root directory, build the Docker image with:
+
+```bash
+docker build -t drug-target-affinity .
+```
+
+### Running the Docker Container
+
+Run the container, exposing the API on port 8000:
+
+```bash
+docker run -p 8000:8000 drug-target-affinity
+```
+
+The FastAPI server will be available at [http://localhost:8000](http://localhost:8000).
+
+You can access the interactive API docs at [http://localhost:8000/docs](http://localhost:8000/docs).
 
 ---
 
